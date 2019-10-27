@@ -1,45 +1,65 @@
 package ru.vvk.convex;
 
 public class Point {
-	
+	/**
+	 * Количество измерений
+	 */
 	public static final int SIZE = 3;
-		
+	/**
+	 * вектор координат точки
+	 */
 	protected double[] vector = new double[SIZE];
-	
-	public Point() {
-		
-	}
 	
 	public Point(double x, double y, double z) {
 		vector[0] = x;
 		vector[1] = y;
 		vector[2] = z;
 	}
-	
+
+	/**
+	 *
+	 * @return - возвращает X координату точки.
+	 */
 	public double X() {
 		return vector[0];
 	}
-	
+
+	/**
+	 *
+	 * @return - возвращает Y координату точки.
+	 */
 	public double Y() {
 		return vector[1];
 	}
-	
+
+	/**
+	 *
+	 * @return - возвращает Z координату точки.
+	 */
 	public double Z() {
 		return vector[2];
 	}
-	
-	public double get(int i) {
-		return vector[i];
-	}
-	
+
+	/**
+	 *
+	 * @param x - значение координаты X точки
+	 */
 	public void setX(double x) {
 		vector[0] = x;
 	}
-	
+
+	/**
+	 *
+	 * @param y - значение координаты y точки
+	 */
 	public void setY(double y) {
 		vector[1] = y;
 	}
-	
+
+	/**
+	 *
+	 * @param z - значение координаты z точки
+	 */
 	public void setZ(double z) {
 		vector[2] = z;
 	}

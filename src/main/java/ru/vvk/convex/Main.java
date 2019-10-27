@@ -41,19 +41,30 @@ import org.jzy3d.plot3d.rendering.canvas.Quality;
 
 public class Main {
 	/**
-	 *
+	 * Окно, реалезующее пользователский интерфейс.
 	 */
 	private JFrame frame;
+	/**
+	 * Построенный график.
+	 */
 	private Chart chart;
-
+	/**
+	 * Множество точек, образующее заданную формулой поверхность.
+	 */
 	private Surface surface;
 
-	// private Surface sMain;
-	// private Surface sFigure;
 	private JTextField tbError;
-
+	/**
+	 * Текстовое поле ввода точки c.
+	 */
 	private JTextArea taC;
+	/**
+	 * Текстовое поле ввода уравнения, задающего множество точек.
+	 */
 	private JTextArea txMain;
+	/**
+	 * Текстовое поле ввода уравнений, ограничивающих множества точек.
+	 */
 	private JTextArea txFuncs;
 	private JPanel pnChart;
 	private JCheckBox cbScatter;
@@ -257,14 +268,15 @@ public class Main {
 		options.add(btnCountpresetsets);
 	}
 
+	/**
+	 * Стросится график поверхности заданной уравнениями
+	 */
 	private void buildChart() {
 		pnChart.setVisible(false);
 		pnChart.removeAll();
 
 		chart = NewtChartComponentFactory.chart(Quality.Intermediate);
-		@SuppressWarnings("unused")
 		ChartScene scene = chart.getScene();
-		@SuppressWarnings("unused")
 		NewtCameraMouseController controller = new NewtCameraMouseController(chart);
 		Component canvas = (Component) chart.getCanvas();
 		pnChart.add(canvas, BorderLayout.CENTER);
@@ -303,6 +315,9 @@ public class Main {
 		pnChart.setVisible(true);
 	}
 
+	/**
+	 * Вычисляется мера полувыпуклости
+	 */
 	private void calculate() {
 		try {
 			String[] s = new String[5];
@@ -311,14 +326,13 @@ public class Main {
 			s[2] = "Мера A1 относительно первой выпуклости";
 			s[3] = "Мера A2 относительно второй выпуклости";
 			s[4] = "Мера выпуклости";
-			OuterTable window = new OuterTable(s);
+			DataTable window = new DataTable(s);
 			double[][] pointC;
 
 			try {
 				if (taC.getText().trim().length() > 0) {
 					String[] line = taC.getText().split("\n");
 					pointC = new double[line.length][3];
-					// �������������� ������ �� ���� �������-������
 					for (int i = 0; i < line.length; i++) {
 						final String str = line[i].trim();
 						if (!str.isEmpty() && !str.startsWith("//")) {
@@ -331,12 +345,10 @@ public class Main {
 						}
 					}
 				} else {
-					// ��������
 					pointC = new double[0][3];
 				}
 			} catch (Exception e) {
 				Utils.error(e.getMessage());
-				// ��������
 				pointC = new double[0][3];
 			}
 
@@ -355,8 +367,6 @@ public class Main {
 					surface = surface.innerOf(sFigure);
 				}
 			}
-
-			// surface.convex(pointC);
 			surface.fractioconvex(pointC);
 			txSummary.setText(surface.getSummary());
 			s = surface.getData();
@@ -375,12 +385,10 @@ public class Main {
 		}
 	}
 
+	/**
+	 * Вычисляется полувыпуклость, данные выводятся в расширенном формате
+	 */
 	private void calculateSetOfSets() {
-
-		final int av = 2;
-		final int bv = 2;
-		final int cv = 2;
-
 		String[] s = new String[8];
 		s[0] = "Мера АxA";
 		s[1] = "Мера A относительно двух выпуклостей";
@@ -406,12 +414,9 @@ public class Main {
 		a[0] = 0.0;
 		a[2] = pointC[0][2];
 		double[] b = new double[3];
-
 		double[] c = new double[3];
 		
-		OuterTable window = new OuterTable(s);
-		
-		
+		DataTable window = new DataTable(s);
 
 		final int n = 5;
 		for(int i = 1;i < n;i++) {
@@ -435,15 +440,19 @@ public class Main {
 						s2[0][s1[0].length+2]=(String.format("%.3f",c[0])+";"+String.format("%.3f",c[1])+";"+String.format("%.3f",c[2]));
 						window.addRaw(s2[0]);
 					}
-							
 				}
-				
-				//System.out.println(y);
 			}
-				
 		}
 	}
 
+	/**
+	 * Находится близость множества к выпуклости.
+	 * @param a - точка на границе поверхности.
+	 * @param b - точка на границе поверхности.
+	 * @param c - внутреняя точка.
+	 * @param pointC - точка внутри сферы.
+	 * @return - возвращается мера выпуклого множества, мера выпуклости множества относительно точки.
+	 */
 	private String[] getMeasureOfConvex(double[] a, double[] b, double[] c, double[][] pointC) {
 		String txMain = "-Math.pow(x, 2) - Math.pow(y, 2) - Math.pow(z,2) + 1";
 
@@ -466,11 +475,8 @@ public class Main {
 			final Surface sFigure2 = new Surface(g, figure2);
 			surface = surface.innerOf(sFigure2);
 
-			// surface.convex(pointC);
 			surface.fractioconvex(pointC);
 			txSummary.setText(surface.getSummary());
-
-			//buildChart();
 		} catch (Exception e) {
 
 		}
@@ -483,6 +489,13 @@ public class Main {
 		return surface.getData();
 	}
 
+	/**
+	 * Создается уравнение поверхности по трем точкам.
+	 * @param x - точка x
+	 * @param y - точка y
+	 * @param c - точка c
+	 * @return - возвращает уравнение поверхности в String.
+	 */
 	private String getFunction(double[] x, double[] y, double[] c) {
 		double x3 = c[0], y3 = c[1], z3 = c[2];
 		double x2 = y[0], y2 = y[1], z2 = y[2];
@@ -492,7 +505,6 @@ public class Main {
 		final double B = ((x3 - x1) * (z2 - z1) - (x2 - x1) * (z3 - z1));
 		final double C = ((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1));
 		final double D = -1.0 * (A * x1 + B * y1 + C * z1);
-
 		return (A + "*x+" + B + "*y+" + C + "*z+" + D);
 	}
 }

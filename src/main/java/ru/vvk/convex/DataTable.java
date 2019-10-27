@@ -10,11 +10,11 @@ import javax.swing.table.DefaultTableModel;
 
 import com.jogamp.nativewindow.util.Dimension;
 
-public class OuterTable {
+public class DataTable {
 	private JFrame frame;
 	JTable results;
 	DefaultTableModel model;
-	public OuterTable(String[] titles) {
+	public DataTable(String[] titles) {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 812, 671);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
@@ -27,13 +27,8 @@ public class OuterTable {
 		for(int i =0;i < titles.length;i++) {
 		model.addColumn(titles[i]);}
 		results = new JTable(model);
-        //������� ������ ��������� � �������� � �� ������ ���� �������
         JScrollPane jscrlp = new JScrollPane(results);
-        //������������ ������� �������������� �������
-        //results.setPreferredScrollableViewportSize(new Dimension(250, 100));
-        //��������� � ��������� ���� ������ �������� � ������� ������ � ���
         frame.getContentPane().add(jscrlp);
-        //���������� ���������
         frame.setVisible(true);
 	}
 	public void addRaw(String[] data) {
